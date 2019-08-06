@@ -59,6 +59,7 @@ export default function () {
     cmd('InsertDefinitionList'),
     cmd('mceNonBreaking'),
     cmd('mcePageBreak'),
+    cmd('mcePlay'),
     cmd('mcePreview'),
     cmd('mcePrint'),
     cmd('mceSave'),
