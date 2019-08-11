@@ -17,6 +17,6 @@ const fireGamesCollision = (editor: Editor, api: GamesApi) => {
   });
 };
 
-export {
-    fireGamesCollision
+export default {
+  fireGamesCollision
 };

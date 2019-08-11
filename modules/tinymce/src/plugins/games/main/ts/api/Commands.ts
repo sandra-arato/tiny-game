@@ -16,9 +16,7 @@ const register = function (editor: Editor, api: GamesApi) {
     if (Env.ie && Env.ie <= 9) {
       console.log('fallback to setInterval')
     } else {
-      console.log('we can use request animation frame');
-      console.log(api);
-      Engine.play(editor, api);
+      Engine.play(api);
     }
   });
 };

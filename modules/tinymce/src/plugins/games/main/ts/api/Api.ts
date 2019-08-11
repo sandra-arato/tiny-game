@@ -33,7 +33,8 @@ export interface GamesApi {
     collision: CollisionGetters;
     obstacles: Obstacles | null;
     ball?: Object;
-    isRunning: boolean,
+    isRunning: boolean;
+    score: number;
 }
 
 const getCollidingItems = (editor: Editor): ItemsGetter => {
@@ -60,6 +61,7 @@ const get = (editor: Editor): GamesApi => {
       },
       obstacles: null,
       isRunning: false,
+      score: 0,
     };
   };
 
