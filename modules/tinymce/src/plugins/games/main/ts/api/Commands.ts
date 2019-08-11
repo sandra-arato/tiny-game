@@ -7,14 +7,18 @@
 import { console } from '@ephox/dom-globals';
 import Editor from 'tinymce/core/api/Editor';
 import Env from 'tinymce/core/api/Env';
+import { GamesApi } from './Api';
+import Engine from '../core/Engine';
 
-const register = function (editor: Editor) {
+const register = function (editor: Editor, api: GamesApi) {
   editor.addCommand('mcePlay', function () {
     // tslint:disable-next-line:no-console
     if (Env.ie && Env.ie <= 9) {
       console.log('fallback to setInterval')
     } else {
       console.log('we can use request animation frame');
+      console.log(api);
+      Engine.play(editor, api);
     }
   });
 };

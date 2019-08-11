@@ -6,15 +6,22 @@
  */
 
 import Editor from 'tinymce/core/api/Editor';
+import { HTMLElement } from '@ephox/dom-globals';
+import Obstacles from '../core/Obstacles';
 
-export type ItemsGetter = () => Array<any>;
-export type PositionGetter = () => Position;
+type ItemsGetter = () => Array<any>;
+type PositionGetter = () => Position;
 
-type Position = {
-    offset: {
-        top: number,
-        left: number
-    };
+export type Position = {
+    offsetTop: number,
+    offsetLeft: number
+}
+
+// could improve naming...
+export type Object = {
+    element: HTMLElement,
+    position: Position,
+    [key: string]: any,
 }
 
 interface CollisionGetters {
@@ -24,6 +31,9 @@ interface CollisionGetters {
 
 export interface GamesApi {
     collision: CollisionGetters;
+    obstacles: Obstacles | null;
+    ball?: Object;
+    isRunning: boolean,
 }
 
 const getCollidingItems = (editor: Editor): ItemsGetter => {
@@ -32,25 +42,29 @@ const getCollidingItems = (editor: Editor): ItemsGetter => {
 
 const getCollisionLocation = (editor: Editor): PositionGetter => {
     const test: Position = {
-        offset: {
-            top: 0,
-            left: 0,
-        }
+        offsetTop: 0,
+        offsetLeft: 0,
     };
     return () => test;
 };
 
+
+// To-do: improve getters and setters.
+// rethink whether to just expose an EngineManager instead
+// which would manage state as a class level object
 const get = (editor: Editor): GamesApi => {
     return {
       collision: {
         getItems: getCollidingItems(editor),
         getPosition: getCollisionLocation(editor),
       },
+      obstacles: null,
+      isRunning: false,
     };
   };
 
-export {
-get
+export default {
+    get
 };
 
 

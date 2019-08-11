@@ -8,11 +8,15 @@
 import PluginManager from 'tinymce/core/api/PluginManager';
 import Commands from './api/Commands';
 import Buttons from './ui/Buttons';
+import Engine from './core/Engine';
+import Api from './api/Api';
 
 export default function () {
   PluginManager.add('games', function (editor) {
-    Commands.register(editor);
+    const api = Api.get(editor);
+    Commands.register(editor, api);
     Buttons.register(editor);
+    Engine.setup(editor, api);
     editor.addShortcut('ctrl+P', '', 'mcePlay');
   });
 }
