@@ -7,13 +7,15 @@
 
 import Editor from 'tinymce/core/api/Editor';
 import { GamesApi } from './Api';
+import { console } from '@ephox/dom-globals';
 
 const fireGamesCollision = (editor: Editor, api: GamesApi) => {
+  console.log('fire event');
   editor.fire('gamesCollision', {
     collision: {
       items: api.collision.getItems(),
-      position: api.collision.getPosition(),
-    }
+    },
+    score: api.score,
   });
 };
 

@@ -11,6 +11,7 @@ const register = function (editor: Editor) {
   editor.ui.registry.addButton('games', {
     icon: 'embed',
     tooltip: 'Play',
+    text: 'Play',
     onAction: () => editor.execCommand('mcePlay')
   });
 

@@ -8,6 +8,7 @@
 import Editor from 'tinymce/core/api/Editor';
 import { HTMLElement } from '@ephox/dom-globals';
 import Obstacles from '../core/Obstacles';
+import Ball from '../core/Ball';
 
 type ItemsGetter = () => Array<any>;
 type PositionGetter = () => Position;
@@ -17,7 +18,10 @@ export type Position = {
     offsetLeft: number
 }
 
-// could improve naming...
+// I could improve naming...
+// the idea is that anyone can extend
+// an object that can act as a character
+// within the game
 export type Object = {
     element: HTMLElement,
     position: Position,
@@ -32,9 +36,12 @@ interface CollisionGetters {
 export interface GamesApi {
     collision: CollisionGetters;
     obstacles: Obstacles | null;
-    ball?: Object;
+    ball?: Ball;
     isRunning: boolean;
-    score: number;
+    score: number | null;
+    timeout: number;
+    runner?: (timestamp: number) => void;
+    gameOver: boolean;
 }
 
 const getCollidingItems = (editor: Editor): ItemsGetter => {
@@ -62,6 +69,8 @@ const get = (editor: Editor): GamesApi => {
       obstacles: null,
       isRunning: false,
       score: 0,
+      timeout: 60 * 1000, // To-do: make this an option
+      gameOver: false,
     };
   };
 
