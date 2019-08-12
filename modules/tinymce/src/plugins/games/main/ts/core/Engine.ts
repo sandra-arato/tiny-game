@@ -7,57 +7,62 @@
 
 import Editor from 'tinymce/core/api/Editor';
 import { GamesApi } from '../api/Api';
+import Events from '../api/Events';
 import Renderer from './Renderer';
 import Ball from './Ball';
 import Obstacles from './Obstacles';
-import Events from '../api/Events';
-import { console } from '@ephox/dom-globals';
 import Paddle from './Paddle';
+import Dialog from '../ui/Dialog';
 
 const notifyCollision = (editor: Editor, api: GamesApi) => {
   Events.fireGamesCollision(editor, api);
 };
 
-const play = (api: GamesApi) => {
-  api.isRunning = true;
-  Renderer.run(api);
-}
+const notifyGameOver = (editor: Editor, api: GamesApi, msg: string) => {
+  Events.fireGameOver(editor, api, msg);
+};
 
-const pause = (api: GamesApi) => {
+const play = (editor: Editor, api: GamesApi) => {
+  api.isRunning = true;
+  Renderer.run(editor, api);
+};
+
+const pause = (editor: Editor, api: GamesApi) => {
   api.isRunning = false;
-  Renderer.pause(api);
-}
+  Renderer.pause(editor, api);
+};
 
 const setup = (editor: Editor, api: GamesApi) => {
   editor.on('init', () => {
-    console.log(editor);
     api.obstacles = new Obstacles(editor, api);
     api.ball = new Ball(editor);
-    api.paddle = new Paddle(editor);
-    console.log(editor.shortcuts);
+    api.paddle = new Paddle(editor, api);
+
     editor.shortcuts.add('37+meta', 'left', () => {
       api.paddle.moveLeft();
     });
     editor.shortcuts.add('39+meta', 'right', () => {
       api.paddle.moveRight();
-  
-    })
+    });
   });
 
   editor.on('gamesCollision', (e) => {
-    const words = api.obstacles.items.filter(o => o.active);
-
     editor.fire('wordCountUpdate', {
       wordCount: {
-        words: words.length,
-        characters: api.score,
+        words: e.words,
+        characters: e.score,
         charactersWithoutSpaces: 0,
       }
     });
   });
-  
 
-  
+  editor.on('gameOver', (e) => {
+    // stop the game if it's still running
+    if (api.isRunning) {
+      pause(editor, api);
+    }
+    Dialog.open(editor, api, e.msg);
+  });
 };
 
 export default {
@@ -65,4 +70,5 @@ export default {
   play,
   pause,
   notifyCollision,
+  notifyGameOver,
 };

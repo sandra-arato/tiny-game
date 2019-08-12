@@ -6,23 +6,19 @@
  */
 
 import Editor from 'tinymce/core/api/Editor';
-import { Position } from '../api/Api';
-import { console, document, HTMLElement } from '@ephox/dom-globals';
+import { document, HTMLElement } from '@ephox/dom-globals';
 
-
-export interface BallConstructor {
-    new (editor: Editor): Ball;
-}
+export type BallConstructor = new (editor: Editor) => Ball;
 
 type Direction = {
     dx: number,
     dy: number,
-}
+};
 
 type Coordinates = {
     x: number,
     y: number,
-}
+};
 
 type Walls = {
     top: number,
@@ -36,28 +32,19 @@ type Walls = {
 export const secretYSauce = 65;
 
 class Ball {
-    element: HTMLElement;
-    position: Position;
-    width: number;
-    height: number;
-    radius: number;
-    direction: Direction;
-    coordinates: Coordinates;
-    walls: Walls;
+    public element: HTMLElement;
+    public width: number;
+    public height: number;
+    public radius: number;
+    public direction: Direction;
+    private coordinates: Coordinates;
+    private walls: Walls;
 
     constructor (editor: Editor) {
         const bouncingBall = document.createElement('span');
         bouncingBall.classList.add('tinymce-games-ball');
         editor.getBody().appendChild(bouncingBall),
         this.element = bouncingBall;
-        // dimensions coming from the DOM element size
-        
-        const dimension = bouncingBall.getBoundingClientRect();
-        console.log(dimension);
-        this.position = {
-            offsetTop: dimension.top - secretYSauce,
-            offsetLeft: dimension.left,
-        };
         this.coordinates = {
             x: 0,
             y: 0,
@@ -70,25 +57,9 @@ class Ball {
             dx: 2,
             dy: 1.5,
         };
-        // console.log('off', this.position.offsetTop);
         this.setBoundaries(editor);
     }
 
-    private setBoundaries (editor: Editor): Ball {
-        // checking boundaries based on iframe dimensions
-        const bodyHeight = editor.iframeElement.offsetHeight;
-        const bodyWidth = editor.iframeElement.offsetWidth;
-
-        this.walls = {
-            top: 0,
-            right: bodyWidth - this.radius,
-            bottom: bodyHeight - this.height,
-            left: 0,
-        };
-
-        return this;
-    }
-    
     public setDirection (dx: number, dy: number): Ball {
         this.direction = {
             dx, dy
@@ -105,7 +76,7 @@ class Ball {
         const { dx, dy } = this.direction;
 
         // the only issue is, if the ball touches
-        // 2 obstacles at once, it continues in 
+        // 2 obstacles at once, it continues in
         // the original direction To-do: fix later
         this.setDirection(dx, -dy);
         this.moveTo(y - dy, x + dx);
@@ -130,13 +101,29 @@ class Ball {
         }
 
         // check if leaving left or right
-        if(d.left + dx > right || d.left + dx < left) {
+        if (d.left + dx > right || d.left + dx < left) {
             this.setDirection(-dx, dy);
         }
 
         this.moveTo(y - dy, x + dx);
         return this;
     }
-}  
+
+    private setBoundaries (editor: Editor): Ball {
+        // checking boundaries based on iframe dimensions
+        const bodyHeight = editor.iframeElement.offsetHeight;
+        const bodyWidth = editor.iframeElement.offsetWidth;
+
+        this.walls = {
+            top: 0,
+            right: bodyWidth - this.radius,
+            bottom: bodyHeight - this.height,
+            left: 0,
+        };
+
+        return this;
+    }
+
+}
 
 export default Ball;

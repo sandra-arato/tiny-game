@@ -7,18 +7,26 @@
 
 import Editor from 'tinymce/core/api/Editor';
 import { GamesApi } from './Api';
-import { console } from '@ephox/dom-globals';
+import { Obstacle } from '../core/Obstacles';
 
 const fireGamesCollision = (editor: Editor, api: GamesApi) => {
-  console.log('fire event');
+  const words = api.obstacles.items.filter((o: Obstacle) => o.active);
   editor.fire('gamesCollision', {
-    collision: {
-      items: api.collision.getItems(),
-    },
     score: api.score,
+    words: words.length,
+  });
+};
+
+const fireGameOver = (editor: Editor, api: GamesApi, msg: string) => {
+  const words = api.obstacles.items.filter((o: Obstacle) => o.active);
+  editor.fire('gameOver', {
+    score: api.score,
+    words: words.length,
+    msg,
   });
 };
 
 export default {
-  fireGamesCollision
+  fireGamesCollision,
+  fireGameOver
 };

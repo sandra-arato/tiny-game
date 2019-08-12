@@ -13,7 +13,7 @@ import Api from './api/Api';
 
 export default function () {
   PluginManager.add('games', function (editor) {
-    const api = Api.get(editor);
+    const api = Api.get();
     Commands.register(editor, api);
     Buttons.register(editor);
     Engine.setup(editor, api);
