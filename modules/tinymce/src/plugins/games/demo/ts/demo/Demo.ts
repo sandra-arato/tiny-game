@@ -20,6 +20,17 @@ tinymce.init({
     background-size: auto 90%;
     background-repeat: no-repeat;
     background-position: 0 3px;
+  }
+  .tinymce-games-paddle {
+    position: absolute;
+    top: calc(80% + 1.75rem);
+    left: calc(50% - 4rem);
+    content: '';
+    display: block;
+    width: 8rem;
+    height: 1rem;
+    background: #1976d2;
+  }
   `,
   height: 600
 });

@@ -16,9 +16,14 @@ const register = function (editor: Editor, api: GamesApi) {
     if (Env.ie && Env.ie <= 9) {
       // will need to come up with a fallback
       // or get Delays.cancelAF into Tiny
-      console.log('fallback to setInterval')
     } else {
-      Engine.play(api);
+      if (api.isRunning) {
+        // pause
+        Engine.pause(api);
+      } else {
+        Engine.play(api);
+      }
+      
     }
   });
 };

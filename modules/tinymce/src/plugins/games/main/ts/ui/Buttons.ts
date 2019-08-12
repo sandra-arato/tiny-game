@@ -14,12 +14,6 @@ const register = function (editor: Editor) {
     text: 'Play',
     onAction: () => editor.execCommand('mcePlay')
   });
-
-  editor.ui.registry.addMenuItem('games', {
-    text: 'Play',
-    icon: 'embed',
-    onAction: () => editor.execCommand('mcePlay')
-  });
 };
 
 export default {

@@ -9,6 +9,7 @@ import Editor from 'tinymce/core/api/Editor';
 import { HTMLElement } from '@ephox/dom-globals';
 import Obstacles from '../core/Obstacles';
 import Ball from '../core/Ball';
+import Paddle from '../core/Paddle';
 
 type ItemsGetter = () => Array<any>;
 type PositionGetter = () => Position;
@@ -37,10 +38,11 @@ export interface GamesApi {
     collision: CollisionGetters;
     obstacles: Obstacles | null;
     ball?: Ball;
+    paddle?: Paddle;
     isRunning: boolean;
     score: number | null;
     timeout: number;
-    runner?: (timestamp: number) => void;
+    runner?: any;
     gameOver: boolean;
 }
 
