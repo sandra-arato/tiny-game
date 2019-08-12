@@ -9,8 +9,9 @@ tinymce.init({
   content_style: `
   .tinymce-games-ball {
     position: absolute;
-    top: 80%;
+    top: 80vh;
     left: calc(50% - 0.75rem);
+    transform: translate(0, 0);
     content: '';
     display: block;
     width: 1.5rem;
@@ -30,6 +31,7 @@ tinymce.init({
     width: 8rem;
     height: 1rem;
     background: #1976d2;
+    transform: translateX(0);
   }
   `,
   height: 600

@@ -20,6 +20,7 @@ const urls = [
   { key: 'emoticons', name: 'Emoticons' },
   { key: 'fullpage', name: 'Full Page' },
   { key: 'fullscreen', name: 'Full Screen' },
+  { key: 'games', name: 'Breakout game' },
   { key: 'help', name: 'Help' },
   { key: 'hr', name: 'Horizontal Rule' },
   { key: 'image', name: 'Image' },
