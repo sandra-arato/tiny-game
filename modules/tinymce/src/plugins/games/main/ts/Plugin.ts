@@ -17,6 +17,5 @@ export default function () {
     Commands.register(editor, api);
     Buttons.register(editor);
     Engine.setup(editor, api);
-    editor.addShortcut('ctrl+P', '', 'mcePlay');
   });
 }

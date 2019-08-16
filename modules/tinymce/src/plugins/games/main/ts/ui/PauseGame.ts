@@ -6,13 +6,12 @@
  */
 
 import Editor from 'tinymce/core/api/Editor';
-import { GamesApi } from '../api/Api';
 import Engine from '../core/Engine';
+import { GamesApi } from '../api/Api';
 
-const open = (editor: Editor, api: GamesApi, msg: string) => {
-  const words = api.obstacles.items.filter((o) => o.active);
+const open = (editor: Editor, api: GamesApi) => {
   editor.windowManager.open({
-    title: `Game Over - ${msg}`,
+    title: `You clicked the editor`,
     body: {
       type: 'panel',
       items: [
@@ -20,23 +19,33 @@ const open = (editor: Editor, api: GamesApi, msg: string) => {
           type: 'htmlpanel', // component type
           html:
           `<div>
-            <p>Score: ${api.score}</p>
-            <p>Words left: ${words.length}</p>
+            <p>You paused the game. What would you like to do now?</p>
           </div>`
         },
       ]
     },
     buttons: [
       {
-        type: 'cancel',
+        type: 'submit',
         name: 'restart',
         text: 'Restart',
+        primary: false
+      },
+      {
+        type: 'cancel',
+        name: 'resume',
+        text: 'Resume',
         primary: true
       }
     ],
     onCancel: () => {
-      Engine.restart(editor, api);
+        Engine.play(editor, api);
+    },
+    onSubmit: (dialogApi) => {
+        Engine.restart(editor, api);
+        dialogApi.close();
     }
+
   });
 };
 

@@ -8,6 +8,7 @@
 import Editor from 'tinymce/core/api/Editor';
 import { GamesApi } from './Api';
 import { Obstacle } from '../core/Obstacles';
+import Engine from '../core/Engine';
 
 const fireGamesCollision = (editor: Editor, api: GamesApi) => {
   const words = api.obstacles.items.filter((o: Obstacle) => o.active);
@@ -26,7 +27,12 @@ const fireGameOver = (editor: Editor, api: GamesApi, msg: string) => {
   });
 };
 
+const fireStartGame = (editor: Editor, api: GamesApi) => {
+  Engine.init(editor, api);
+};
+
 export default {
+  fireStartGame,
   fireGamesCollision,
   fireGameOver
 };

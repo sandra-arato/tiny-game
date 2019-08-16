@@ -19,6 +19,9 @@ const register = function (editor: Editor, api: GamesApi) {
         // pause
         Engine.pause(editor, api);
       } else {
+        if (!api.ball && !api.obstacles) {
+          Engine.init(editor, api);
+        }
         Engine.play(editor, api);
       }
     }

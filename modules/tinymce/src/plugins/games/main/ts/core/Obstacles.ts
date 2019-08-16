@@ -7,17 +7,16 @@
 
 import Editor from 'tinymce/core/api/Editor';
 import Delay from 'tinymce/core/api/util/Delay';
-import Rect from 'tinymce/core/api/geom/Rect';
+import Rect, { GeomRect } from 'tinymce/core/api/geom/Rect';
 import { GamesApi, Object } from '../api/Api';
 import Collision from './Collision';
 import Events from '../api/Events';
-import { HTMLElement } from '@ephox/dom-globals';
+import { HTMLElement,  document, Node } from '@ephox/dom-globals';
 
 export type Obstacle = {
     element: HTMLElement,
     score: null | number,
-    width: number,
-    height: number,
+    rect: GeomRect,
     onCollision?: () => void,
     active: boolean,
 };
@@ -49,9 +48,10 @@ class Obstacles {
     constructor (editor: Editor, api: GamesApi, options?: Options) {
         this.editor = editor;
         this.api = api;
-        this.init();
         this.options = options || defaultOptions;
         this.collisions = new Set();
+        this.items = [];
+        this.init();
         /*
             To-do: To make things faster for the rendering, I'd possibly
             move this into to a web worker.
@@ -59,6 +59,7 @@ class Obstacles {
         */
     }
 
+    // removing styles by default
     public init () {
         const obstacles = [];
         // taking only the first paragraph for POC
@@ -100,6 +101,35 @@ class Obstacles {
         return this;
     }
 
+    // keeping the styles
+    // this is NOT STABLE atm
+    public init2() {
+        const content = <HTMLElement[]> this.editor.dom.select('body > *');
+
+        for (let i = 0; i < content.length; i++) {
+            const block = content[i];
+
+            if (block.childElementCount) {
+                let j = 0;
+                do {
+                    const current = block.childNodes[j];
+                    if (current.nodeName === '#text') {
+                        this.breakLineToBricks(current);
+                    } else if (current.childNodes.length > 0 ) {
+                        this.addScoreToDomElement(current);
+                    }
+                    j++;
+                } while (block.childNodes[j]);
+            } else {
+                // even if there are no children,
+                // we need to break up long lines
+                if (block.nodeName !== '#text') {
+                    this.addScoreToDomElement(block);
+                }
+            }
+        }
+    }
+
     public checkCollision (ball: Object): boolean {
         const ballRect = Rect.fromClientRect(ball.element.getBoundingClientRect());
         // running a collision check on each of the obstacles
@@ -109,6 +139,55 @@ class Obstacles {
         const collision = !checkEachItem.every((x) => !x);
         // if any item returns true, collision will be true
         return collision;
+    }
+
+    private breakLineToBricks (element: Node): Obstacles {
+        // blocks represent a text node containing words
+        const blocks = element.textContent.trim().split(' ') || [];
+        // this is where we'll store the 'bricks'
+        const obstacles = this.items;
+        const newElement = document.createElement('span');
+        this.editor.dom.replace(newElement, element);
+        // breaking up the paragraph to words as obstacles
+        for (let i = 0; i < blocks.length; i++) {
+            // value could be set based on an api passed in score funtion
+            const score = blocks[i].length * randomScalingNumber - randomBaseNumber;
+            // element is the new 'brick' to break out
+            const element = document.createElement('span');
+            element.innerHTML = `${blocks[i]} `;
+            element.setAttribute('data-score', `${score}`);
+            newElement.appendChild(element);
+            const rect = Rect.fromClientRect(element.getBoundingClientRect());
+            // these are the items we are watching during the game
+            obstacles.push({
+                element,
+                score,
+                rect,
+                active: true,
+            });
+        }
+
+        this.editor.dom.remove(newElement, true);
+        return this;
+    }
+
+    private addScoreToDomElement(element): Obstacles {
+        if (element.innerText.includes(' ')) {
+            return this.breakLineToBricks(element);
+        }
+
+        const rect = Rect.fromClientRect(element.getBoundingClientRect());
+        const obstacles = this.items;
+        const score = Math.floor(rect.w) * randomScalingNumber - randomBaseNumber;
+        element.setAttribute('data-score', `${score}`);
+        // these are the items we are watching during the game
+        obstacles.push({
+            element,
+            score,
+            rect,
+            active: true,
+        });
+        return this;
     }
 
     private isTouching (ballRect, item): boolean {
