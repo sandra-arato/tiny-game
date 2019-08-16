@@ -32,6 +32,7 @@ tinymce.init({
     height: 1rem;
     background: #1976d2;
     transform: translateX(0);
+    transition: transform 120ms linear;
   }
   `,
   height: 600

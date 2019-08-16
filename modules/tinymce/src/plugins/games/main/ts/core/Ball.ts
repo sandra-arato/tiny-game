@@ -54,8 +54,8 @@ class Ball {
         this.radius = this.width / 2;
         // this can come from options later
         this.direction = {
-            dx: 2,
-            dy: 1.5,
+            dx: 4,
+            dy: 2.5,
         };
         this.setBoundaries(editor);
     }
