@@ -1,6 +1,6 @@
-# The big Tiny monorepo
+# This is a for of: The big Tiny monorepo
 
-Welcome to the TinyMCE monorepo. For TinyMCE itself look to the [modules/tinymce](modules/tinymce) folder.
+This repo is a fork of the original TinyMCE monorepo. I forked to develop a proof of concept of 'games' plugin for Tiny MCE. Now, I'd like to share it with the world as it will not be worked on for a while. To try to plugin, run developmnent mode on the monorepo, than navigate to the /games plugin, and press play. 
 
 ## Some background
 
